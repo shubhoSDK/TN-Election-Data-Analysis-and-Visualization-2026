@@ -25,7 +25,11 @@
     --muted:    #6b8aa4;
     --ticker:   #0d1a2b;
   }
-
+  .distribution-container { display: flex; flex-direction: column; gap: 20px; margin-top: 15px; }
+.bar-wrap { display: flex; height: 30px; width: 100%; border-radius: 4px; overflow: hidden; }
+.bar { height: 100%; }
+.dist-header { font-weight: bold; margin-bottom: 5px; }
+.dist-legend { display: flex; justify-content: space-between; font-size: 0.85em; margin-top: 5px; }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -576,44 +580,32 @@
   </div>
 
   <!-- ─── DONUT SEATS ─── -->
-  <div class="chart-card col-4">
-    <div class="section-label"><span class="num">01</span> Seat Tally<span></span></div>
-    <div class="chart-title">234 Seats Distributed</div>
-    <div class="chart-desc">Who controls the assembly</div>
-    <div class="donut-pair">
-      <div class="donut-item">
-        <div class="donut-year">2021</div>
-        <div class="donut-wrap">
-          <canvas id="donut2021"></canvas>
-          <div class="donut-center">
-            <div class="dc-val">133</div>
-            <div class="dc-label">DMK won</div>
-          </div>
-        </div>
-        <div class="donut-legend">
-          <div class="legend-row"><div class="legend-dot" style="background:var(--dmk)"></div> DMK <span class="lv">133</span></div>
-          <div class="legend-row"><div class="legend-dot" style="background:var(--aiadmk)"></div> AIADMK <span class="lv">66</span></div>
-          <div class="legend-row"><div class="legend-dot" style="background:var(--others)"></div> Others <span class="lv">35</span></div>
-        </div>
-      </div>
-      <div class="donut-item">
-        <div class="donut-year">2026</div>
-        <div class="donut-wrap">
-          <canvas id="donut2026"></canvas>
-          <div class="donut-center">
-            <div class="dc-val">108</div>
-            <div class="dc-label">TVK won</div>
-          </div>
-        </div>
-        <div class="donut-legend">
-          <div class="legend-row"><div class="legend-dot" style="background:var(--tvk)"></div> TVK <span class="lv">108</span></div>
-          <div class="legend-row"><div class="legend-dot" style="background:var(--dmk)"></div> DMK <span class="lv">59</span></div>
-          <div class="legend-row"><div class="legend-dot" style="background:var(--aiadmk)"></div> AIADMK <span class="lv">47</span></div>
-          <div class="legend-row"><div class="legend-dot" style="background:var(--others)"></div> Others <span class="lv">20</span></div>
-        </div>
-      </div>
+  <div class="distribution-container">
+  <div class="dist-chart">
+    <div class="dist-header">2021 Assembly</div>
+    <div class="bar-wrap">
+      <div class="bar" style="width: 57%; background: var(--dmk);"></div>
+      <div class="bar" style="width: 28%; background: var(--aiadmk);"></div>
+      <div class="bar" style="width: 15%; background: var(--others);"></div>
+    </div>
+    <div class="dist-legend">
+      <span>DMK: 133</span> <span>AIADMK: 66</span> <span>Others: 35</span>
     </div>
   </div>
+
+  <div class="dist-chart">
+    <div class="dist-header">2026 Assembly</div>
+    <div class="bar-wrap">
+      <div class="bar" style="width: 46%; background: var(--tvk);"></div>
+      <div class="bar" style="width: 25%; background: var(--dmk);"></div>
+      <div class="bar" style="width: 20%; background: var(--aiadmk);"></div>
+      <div class="bar" style="width: 9%; background: var(--others);"></div>
+    </div>
+    <div class="dist-legend">
+      <span>TVK: 108</span> <span>DMK: 59</span> <span>AIADMK: 47</span> <span>Others: 20</span>
+    </div>
+  </div>
+</div>
 
   <!-- ─── FLIP FLOWS ─── -->
   <div class="chart-card col-5">
