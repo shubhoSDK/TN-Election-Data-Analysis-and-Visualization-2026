@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-liquidfill@4.0.0/dist/echarts-liquidfill.min.js"></script>
 <style>
   :root {
     --bg:       #080e1a;
@@ -580,7 +582,10 @@
     <div class="section-label"><span class="num">01</span> Seat Tally<span></span></div>
     <div class="chart-title">234 Seats Distributed</div>
     <div class="chart-desc">Who controls the assembly</div>
-    <div class="donut-pair">
+    <div class="drop-container" style="display: flex; justify-content: space-around; padding: 20px 0;">
+  <div id="drop2021" style="width: 120px; height: 160px;"></div>
+  <div id="drop2026" style="width: 120px; height: 160px;"></div>
+</div>
       <div class="donut-item">
         <div class="donut-year">2021</div>
         <div class="donut-wrap">
@@ -752,43 +757,28 @@ const C = {
 }
 
 // ─── DONUTS ───────────────────────────────────────────────────────────────────
-function makeDonut(id, data, colors) {
-  const ctx = document.getElementById(id).getContext('2d');
-  return new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Party 1', 'Party 2', 'Party 3', 'Party 4'], // Add labels if missing
-      datasets: [{
-        data: data,
-        backgroundColor: colors,
-        borderColor: '#080e1a',
-        borderWidth: 3,
-        hoverOffset: 4,
-        borderRadius: 2 // Adding this makes the segments look more polished
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false, // Change this to false
-      cutout: '75%', // Try 75% for a sleeker look
-      animation: {
-        animateRotate: true,
-        animateScale: true, // Add this for a better intro animation
-        duration: 1400,
-        easing: 'easeOutQuart'
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#111e31',
-          borderColor: '#1d2f47',
-          borderWidth: 1,
-          callbacks: { label: ctx => ` ${ctx.raw} seats` }
-        }
+function initDrop(id, value, max, color) {
+  const chart = echarts.init(document.getElementById(id));
+  const option = {
+    series: [{
+      type: 'liquidFill',
+      data: [value / max], // Percentage (e.g., 108/234)
+      color: [color],
+      outline: { show: true, borderDistance: 0, itemStyle: { borderColor: color, borderWidth: 2 } },
+      backgroundStyle: { color: 'transparent' },
+      label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        formatter: (params) => value // Shows seat count
       }
-    }
-  });
+    }]
+  };
+  chart.setOption(option);
 }
+
+// Initialize for your data
+initDrop('drop2021', 133, 234, '#2196c4'); // DMK 2021
+initDrop('drop2026', 108, 234, '#e84c3d'); // TVK 2026
 
 // ─── FLIP BARS ────────────────────────────────────────────────────────────────
 const flips = [
