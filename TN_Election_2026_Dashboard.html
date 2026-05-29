@@ -756,20 +756,39 @@ function makeDonut(id, data, colors) {
   const ctx = document.getElementById(id).getContext('2d');
   return new Chart(ctx, {
     type: 'doughnut',
-    data: { datasets: [{ data, backgroundColor: colors, borderColor: '#080e1a', borderWidth: 3, hoverOffset: 4 }] },
+    data: {
+      labels: ['Party 1', 'Party 2', 'Party 3', 'Party 4'], // Add labels if missing
+      datasets: [{
+        data: data,
+        backgroundColor: colors,
+        borderColor: '#080e1a',
+        borderWidth: 3,
+        hoverOffset: 4,
+        borderRadius: 2 // Adding this makes the segments look more polished
+      }]
+    },
     options: {
-      responsive: true, maintainAspectRatio: true,
-      cutout: '68%',
-      animation: { animateRotate: true, duration: 1400, easing: 'easeOutQuart' },
-      plugins: { legend: { display: false }, tooltip: {
-        backgroundColor: '#111e31', borderColor: '#1d2f47', borderWidth: 1,
-        callbacks: { label: ctx => ` ${ctx.raw} seats` }
-      }}
+      responsive: true,
+      maintainAspectRatio: false, // Change this to false
+      cutout: '75%', // Try 75% for a sleeker look
+      animation: {
+        animateRotate: true,
+        animateScale: true, // Add this for a better intro animation
+        duration: 1400,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#111e31',
+          borderColor: '#1d2f47',
+          borderWidth: 1,
+          callbacks: { label: ctx => ` ${ctx.raw} seats` }
+        }
+      }
     }
   });
 }
-makeDonut('donut2021', [133, 66, 35], [C.dmk, C.aiadmk, C.others]);
-makeDonut('donut2026', [108, 59, 47, 20], [C.tvk, C.dmk, C.aiadmk, C.others]);
 
 // ─── FLIP BARS ────────────────────────────────────────────────────────────────
 const flips = [
