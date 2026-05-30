@@ -420,6 +420,15 @@
     font-size: 9px; letter-spacing: .1em; color: var(--muted);
     max-width: 600px; line-height: 1.6; text-align: right;
   }
+  .visitor-counter {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .visitor-counter .count { color: var(--tvk); font-weight: 600; font-size: 12px; }
+  .visitor-counter .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--tvk); animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
   /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
@@ -673,9 +682,15 @@
   <!-- ─── FOOTER ─── -->
   <div class="dash-footer">
     <div class="footer-brand">AtliQ<span>Media</span> · Tamil Nadu 2026</div>
-    <div class="footer-note">
-      Source: Election Commission of India Results Portal (results.eci.gov.in/ResultAcGenMay2026) · TCPD / Ashoka University (2021 baseline) ·
-      This dashboard uses only publicly available ECI data. It does not endorse, criticise, or take any political position on any party, leader, or outcome.
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <div class="visitor-counter">
+        <div class="dot"></div>
+        <span>Visitors: <span class="count" id="visitorCount">0</span></span>
+      </div>
+      <div class="footer-note">
+        Source: Election Commission of India Results Portal (results.eci.gov.in/ResultAcGenMay2026) · TCPD / Ashoka University (2021 baseline) ·
+        This dashboard uses only publicly available ECI data. It does not endorse, criticise, or take any political position on any party, leader, or outcome.
+      </div>
     </div>
   </div>
 
@@ -982,6 +997,69 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.2 });
 document.querySelectorAll('.chart-card').forEach(c => observer.observe(c));
+
+// ─── VISITOR COUNTER ──────────────────────────────────────────────────────────
+(function() {
+  const STORAGE_KEY = 'tn-election-2026-dashboard-visitors';
+  const SESSION_KEY = 'tn-election-2026-session-id';
+  
+  // Generate unique session ID
+  function getSessionId() {
+    let sessionId = sessionStorage.getItem(SESSION_KEY);
+    if (!sessionId) {
+      sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem(SESSION_KEY, sessionId);
+    }
+    return sessionId;
+  }
+  
+  // Initialize visitor count
+  function initVisitorCounter() {
+    const sessionId = getSessionId();
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    
+    // Get stored data
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { 
+      total: 0, 
+      lastDate: today,
+      sessions: []
+    };
+    
+    // Reset if new day
+    if (data.lastDate !== today) {
+      data.lastDate = today;
+    }
+    
+    // Add session if not already counted
+    if (!data.sessions.includes(sessionId)) {
+      data.sessions.push(sessionId);
+      data.total += 1;
+    }
+    
+    // Keep only last 1000 sessions to prevent storage overflow
+    if (data.sessions.length > 1000) {
+      data.sessions = data.sessions.slice(-1000);
+    }
+    
+    // Save updated data
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    
+    // Display count
+    const counterEl = document.getElementById('visitorCount');
+    if (counterEl) {
+      counterEl.textContent = data.total.toLocaleString();
+      counterEl.style.fontVariantNumeric = 'tabular-nums';
+    }
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisitorCounter);
+  } else {
+    initVisitorCounter();
+  }
+})();
 </script>
 </body>
 </html>
